@@ -1,0 +1,31 @@
+---
+- name: Apache Web Server Configuration Playbook
+  hosts: web
+  tasks:
+    - name: Installing Apache Latest Playbook
+      yum:
+        name: httpd
+        state: latest
+    - name: Starting and Enabling the HTTPD Service
+      service:
+        name: httpd
+        state: started
+        enabled: true
+    - name: Setting Up Apache Web Server
+      template:
+        src: /home/admin/playbooks/22_23_index.j2 
+        dest: /var/www/html/index.html
+    - name: Restarting Apache HTTPD Service
+      service:
+        name: httpd
+        state: restarted
+    - name: Allowing HTTPD Traffic in the Firewall
+      firewalld:
+        service: http
+        permanent: yes
+        state: enabled
+    - name: Reloading the firewall service
+      service:
+        name: firewalld
+        state: reloaded
+...
